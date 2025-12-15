@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        SONARQUBE_SERVER  = 'MySonarQube'   // 🔴 MUST MATCH Jenkins config EXACTLY
+        SONARQUBE_SERVER  = 'Sonar'          // ✅ MUST MATCH Jenkins config EXACTLY
         SONAR_PROJECT_KEY = 'sonarqube-test'
         SONAR_CRED_ID     = 'sonar-token'
     }
@@ -11,7 +11,8 @@ pipeline {
 
         stage('Checkout') {
             steps {
-                git url: 'https://github.com/swetha-200160/sonarqube-test.git', branch: 'master'
+                git url: 'https://github.com/swetha-200160/sonarqube-test.git',
+                    branch: 'master'
             }
         }
 
@@ -30,11 +31,13 @@ pipeline {
 
         stage('SonarQube Analysis') {
             steps {
-                withSonarQubeEnv("${SONARQUBE_SERVER}") {
-                    withCredentials([string(credentialsId: "${SONAR_CRED_ID}", variable: 'SONAR_TOKEN')]) {
+                withSonarQubeEnv('Sonar') {
+                    withCredentials([
+                        string(credentialsId: 'sonar-token', variable: 'SONAR_TOKEN')
+                    ]) {
                         bat """
                         mvn sonar:sonar ^
-                        -Dsonar.projectKey=${SONAR_PROJECT_KEY} ^
+                        -Dsonar.projectKey=sonarqube-test ^
                         -Dsonar.login=%SONAR_TOKEN%
                         """
                     }

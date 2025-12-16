@@ -1,0 +1,29 @@
+<settings>
+
+  <profiles>
+    <profile>
+      <id>nexus</id>
+      <repositories>
+        <repository>
+          <id>nexus</id>
+          <url>http://localhost:8081/repository/maven-releases/</url>
+          <releases><enabled>true</enabled></releases>
+          <snapshots><enabled>false</enabled></snapshots>
+        </repository>
+      </repositories>
+    </profile>
+  </profiles>
+
+  <activeProfiles>
+    <activeProfile>nexus</activeProfile>
+  </activeProfiles>
+
+  <servers>
+    <server>
+      <id>nexus</id>
+      <username>admin</username>
+      <password>NEXUS_PASSWORD</password>
+    </server>
+  </servers>
+
+</settings>

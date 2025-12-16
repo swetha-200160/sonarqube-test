@@ -1,13 +1,15 @@
 pipeline {
   agent any
 
-  stages {
 
     stage('Checkout') {
-      steps {
-        git 'https://github.com/your/repo.git'
-      }
+    steps {
+        git branch: 'main',
+            url: 'https://github.com/your/repo.git',
+            credentialsId: 'git-credentials'
     }
+}
+
 
     stage('Build') {
       steps {

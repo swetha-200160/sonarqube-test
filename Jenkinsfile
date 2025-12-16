@@ -2,6 +2,7 @@ pipeline {
   agent any
 
   stages {
+
     stage('Checkout') {
       steps {
         git 'https://github.com/your/repo.git'
@@ -10,14 +11,14 @@ pipeline {
 
     stage('Build') {
       steps {
-        sh 'mvn clean package'
+        bat 'mvn clean package'
       }
     }
 
     stage('SonarQube Analysis') {
       steps {
         withSonarQubeEnv('sonarqube') {
-          sh 'mvn sonar:sonar'
+          bat 'mvn sonar:sonar'
         }
       }
     }
@@ -30,13 +31,13 @@ pipeline {
 
     stage('Deploy to Nexus') {
       steps {
-        sh 'mvn deploy'
+        bat 'mvn deploy'
       }
     }
 
     stage('Docker Build & Push') {
       steps {
-        sh '''
+        bat '''
         docker build -t myapp:1.0 .
         docker tag myapp:1.0 localhost:8082/myapp:1.0
         docker push localhost:8082/myapp:1.0

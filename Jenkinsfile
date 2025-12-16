@@ -1,50 +1,56 @@
 pipeline {
-  agent any
+    agent any
 
-
-    stage('Checkout') {
-    steps {
-        git branch: 'main',
-            url: 'https://github.com/your/repo.git',
-            credentialsId: 'git-credentials'
-    }
-}
-
-
-    stage('Build') {
-      steps {
-        bat 'mvn clean package'
-      }
+    tools {
+        maven 'Maven'
     }
 
-    stage('SonarQube Analysis') {
-      steps {
-        withSonarQubeEnv('sonarqube') {
-          bat 'mvn sonar:sonar'
+    environment {
+        SONARQUBE_SERVER = 'SonarQube'
+    }
+
+    stages {
+
+        stage('Checkout') {
+            steps {
+                git branch: 'main',
+                    url: 'https://github.com/your/repo.git',
+                    credentialsId: 'git-credentials'
+            }
         }
-      }
-    }
 
-    stage('Quality Gate') {
-      steps {
-        waitForQualityGate abortPipeline: true
-      }
-    }
+        stage('Build') {
+            steps {
+                bat 'mvn clean compile'
+            }
+        }
 
-    stage('Deploy to Nexus') {
-      steps {
-        bat 'mvn deploy'
-      }
-    }
+        stage('SonarQube Analysis') {
+            steps {
+                withSonarQubeEnv('SonarQube') {
+                    bat 'mvn sonar:sonar'
+                }
+            }
+        }
 
-    stage('Docker Build & Push') {
-      steps {
-        bat '''
-        docker build -t myapp:1.0 .
-        docker tag myapp:1.0 localhost:8082/myapp:1.0
-        docker push localhost:8082/myapp:1.0
-        '''
-      }
+        stage('Quality Gate') {
+            steps {
+                timeout(time: 5, unit: 'MINUTES') {
+                    waitForQualityGate abortPipeline: true
+                }
+            }
+        }
+
+        stage('Deploy to Nexus') {
+            steps {
+                bat 'mvn deploy'
+            }
+        }
+
+        stage('Docker Build & Push') {
+            steps {
+                bat 'docker build -t myapp:latest .'
+            }
+        }
     }
-  }
 }

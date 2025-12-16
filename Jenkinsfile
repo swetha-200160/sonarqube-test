@@ -2,22 +2,45 @@ pipeline {
   agent any
 
   stages {
-
     stage('Checkout') {
       steps {
-        git 'https://github.com/yourname/java-consumer-app.git'
+        git 'https://github.com/your/repo.git'
       }
     }
 
-    stage('Build (Pulls from Nexus)') {
+    stage('Build') {
       steps {
         sh 'mvn clean package'
       }
     }
 
-    stage('Docker Build') {
+    stage('SonarQube Analysis') {
       steps {
-        sh 'docker build -t consumer-app:1.0 .'
+        withSonarQubeEnv('sonarqube') {
+          sh 'mvn sonar:sonar'
+        }
+      }
+    }
+
+    stage('Quality Gate') {
+      steps {
+        waitForQualityGate abortPipeline: true
+      }
+    }
+
+    stage('Deploy to Nexus') {
+      steps {
+        sh 'mvn deploy'
+      }
+    }
+
+    stage('Docker Build & Push') {
+      steps {
+        sh '''
+        docker build -t myapp:1.0 .
+        docker tag myapp:1.0 localhost:8082/myapp:1.0
+        docker push localhost:8082/myapp:1.0
+        '''
       }
     }
   }

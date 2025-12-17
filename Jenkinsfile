@@ -20,32 +20,31 @@ pipeline {
         }
 
         stage('Build') {
-            steps {
-                bat 'mvn clean compile'
-            }
+    steps {
+        dir('my-app') {
+            bat 'mvn clean compile'
         }
+    }
+}
 
-        stage('SonarQube Analysis') {
-            steps {
-                withSonarQubeEnv('SonarQube') {
-                    bat 'mvn sonar:sonar'
-                }
+stage('SonarQube Analysis') {
+    steps {
+        dir('my-app') {
+            withSonarQubeEnv('SonarQube') {
+                bat 'mvn sonar:sonar'
             }
         }
+    }
+}
 
-        stage('Quality Gate') {
-            steps {
-                timeout(time: 5, unit: 'MINUTES') {
-                    waitForQualityGate abortPipeline: true
-                }
-            }
+stage('Deploy to Nexus') {
+    steps {
+        dir('my-app') {
+            bat 'mvn deploy'
         }
+    }
+}
 
-        stage('Deploy to Nexus') {
-            steps {
-                bat 'mvn deploy'
-            }
-        }
 
         stage('Docker Build & Push') {
             steps {

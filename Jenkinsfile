@@ -9,14 +9,15 @@ pipeline {
         SONARQUBE_SERVER = 'SonarQube'
     }
 
-   stage('Checkout') {
-    steps {
-        git branch: 'master',
-            url: 'https://github.com/swetha-200160/sonarqube-test.git',
-            credentialsId: 'git-credentials'
-    }
-}
+    stages {
 
+        stage('Checkout') {
+            steps {
+                git branch: 'main',
+                    url: 'https://github.com/swetha-200160/java-project.git',
+                    credentialsId: 'git-credentials'
+            }
+        }
 
         stage('Build') {
             steps {

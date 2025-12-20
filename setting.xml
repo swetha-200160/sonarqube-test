@@ -3,7 +3,7 @@
     <server>
       <id>nexus</id>
       <username>admin</username>
-      <password>YOUR_NEXUS_PASSWORD</password>
+      <password>PASTE_NEXUS_PASSWORD_HERE</password>
     </server>
   </servers>
 </settings>

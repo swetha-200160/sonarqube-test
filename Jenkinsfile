@@ -1,42 +1,46 @@
 pipeline {
     agent any
 
+    environment {
+        JAVA_HOME = 'C:\\Program Files\\Java\\jdk-17'
+        PATH = "${env.JAVA_HOME}\\bin;${env.PATH}"
+    }
+
     tools {
-        maven 'Maven'
-        jdk 'jdk11'
+        maven 'MAVEN_HOME'
     }
 
     stages {
+
         stage('Checkout') {
             steps {
-                git 'pipeline {
-    agent any
-
-    tools {
-        maven 'Maven'
-        jdk 'jdk11'
-    }
-
-    stages {
-        stage('Checkout') {
-            steps {
-                git 'https://github.com/your-repo/java-project.git'
+                git branch: 'master',
+                    url: 'https://github.com/swetha-200160/sonarqube-test.git'
             }
         }
 
-        stage('Build & Deploy to Nexus') {
+        stage('Build') {
             steps {
-                sh 'mvn clean deploy'
-            }
-        }
-    }
-}
+                bat 'java -version'
+                bat 'mvn clean compile'
             }
         }
 
-        stage('Build & Deploy to Nexus') {
+        stage('Test') {
             steps {
-                sh 'mvn clean deploy'
+                bat 'mvn test'
+            }
+        }
+
+        stage('Package') {
+            steps {
+                bat 'mvn package'
+            }
+        }
+
+        stage('Deploy to Nexus') {
+            steps {
+                bat 'mvn deploy'
             }
         }
     }

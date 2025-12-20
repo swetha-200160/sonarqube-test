@@ -2,20 +2,41 @@ pipeline {
     agent any
 
     tools {
-        maven 'MAVEN_HOME'
-        jdk 'JDK11'
+        maven 'Maven'
+        jdk 'jdk11'
     }
 
     stages {
         stage('Checkout') {
             steps {
-                git 'https://github.com/swetha-200160/sonarqube-test.git'
+                git 'pipeline {
+    agent any
+
+    tools {
+        maven 'Maven'
+        jdk 'jdk11'
+    }
+
+    stages {
+        stage('Checkout') {
+            steps {
+                git 'https://github.com/your-repo/java-project.git'
             }
         }
 
-        stage('Build & Deploy') {
+        stage('Build & Deploy to Nexus') {
             steps {
-                bat 'mvn clean deploy'
+                sh 'mvn clean deploy'
+            }
+        }
+    }
+}
+            }
+        }
+
+        stage('Build & Deploy to Nexus') {
+            steps {
+                sh 'mvn clean deploy'
             }
         }
     }

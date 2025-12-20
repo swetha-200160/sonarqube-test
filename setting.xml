@@ -22,7 +22,7 @@
     <server>
       <id>nexus</id>
       <username>admin</username>
-      <password>NEXUS_PASSWORD</password>
+      <password>swethadhanya</password>
     </server>
   </servers>
 

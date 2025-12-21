@@ -17,7 +17,7 @@ pipeline {
                 git branch: 'master',
                     url: 'https://github.com/swetha-200160/sonarqube-test.git'
             }
-        
+        }
 
         stage('Build') {
             steps {
@@ -29,6 +29,26 @@ pipeline {
         stage('Test') {
             steps {
                 bat 'mvn test'
+            }
+        }
+
+        stage('SonarQube Analysis') {
+            steps {
+                withSonarQubeEnv('SonarQubeServer') {
+                    bat '''
+                    mvn sonar:sonar ^
+                    -Dsonar.projectKey=sonarqube-test ^
+                    -Dsonar.projectName=sonarqube-test
+                    '''
+                }
+            }
+        }
+
+        stage('Quality Gate') {
+            steps {
+                timeout(time: 5, unit: 'MINUTES') {
+                    waitForQualityGate abortPipeline: true
+                }
             }
         }
 

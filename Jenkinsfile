@@ -17,7 +17,7 @@ pipeline {
                 git branch: 'master',
                     url: 'https://github.com/swetha-200160/sonarqube-test.git'
             }
-        }
+        
 
         stage('Build') {
             steps {

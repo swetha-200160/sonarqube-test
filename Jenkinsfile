@@ -2,20 +2,21 @@ pipeline {
     agent any
  
     tools {
-        maven 'maven'
+        maven 'MAVEN_HOME'
     }
  
     environment {
         SONARQUBE_ENV = 'SonarQubeServer'
-        DEPLOY_PATH = 'C:\\Users\\swethasuresh\\sample file'
-        JAR_NAME = 'hrms.jar'
+        DEPLOY_PATH   = 'C:/Users/swethasuresh/sample file'
+        JAR_NAME      = 'hrms.jar'
     }
  
     stages {
+
         stage('Checkout Code') {
             steps {
-                git branch: 'master', 
-                    url: 'https://github.com/swetha-200160/sonarqube-test.git', 
+                git branch: 'master',
+                    url: 'https://github.com/swetha-200160/sonarqube-test.git',
                     credentialsId: 'gitcred'
             }
         }
@@ -36,22 +37,20 @@ pipeline {
  
         stage('Copy JAR to Deploy Path') {
             steps {
-                script {
-                    bat """
-                        if not exist "${DEPLOY_PATH}" mkdir "${DEPLOY_PATH}"
-                        copy target\\*.jar "${DEPLOY_PATH}\\${JAR_NAME}" /Y
-                    """
-                }
+                bat """
+                if not exist "${DEPLOY_PATH}" mkdir "${DEPLOY_PATH}"
+                copy target\\*.jar "${DEPLOY_PATH}\\${JAR_NAME}" /Y
+                """
             }
         }
     }
  
     post {
         success {
-            echo 'Build, SonarQube Analysis, and JAR copy completed successfully.'
+            echo '✅ Build, SonarQube analysis, and JAR copy completed successfully.'
         }
         failure {
-            echo 'Pipeline failed.'
+            echo '❌ Pipeline failed.'
         }
     }
 }

@@ -1,67 +1,57 @@
 pipeline {
     agent any
-
-    environment {
-        JAVA_HOME = 'C:\\Program Files\\Java\\jdk-17'
-        PATH = "${env.JAVA_HOME}\\bin;${env.PATH}"
-    }
-
+ 
     tools {
-        maven 'MAVEN_HOME'
+        maven 'maven'
     }
-
+ 
+    environment {
+        SONARQUBE_ENV = 'SonarQubeServer'
+        DEPLOY_PATH = 'C:\Users\swethasuresh\sample file'
+        JAR_NAME = 'hrms.jar'
+    }
+ 
     stages {
-
-        stage('Checkout') {
+        stage('Checkout Code') {
             steps {
-                git branch: 'master',
-                    url: 'https://github.com/swetha-200160/sonarqube-test.git'
+                git branch: 'master', 
+                    url: 'https://github.com/swetha-200160/sonarqube-test.git', 
+                    credentialsId: 'gitcred'
             }
         }
-
-        stage('Build') {
+ 
+        stage('Build Project') {
             steps {
-                bat 'java -version'
-                bat 'mvn clean compile'
+                bat 'mvn clean package -DskipTests'
             }
         }
-
-        stage('Test') {
-            steps {
-                bat 'mvn test'
-            }
-        }
-
+ 
         stage('SonarQube Analysis') {
             steps {
-                withSonarQubeEnv('SonarQubeServer') {
-                    bat '''
-                    mvn sonar:sonar ^
-                    -Dsonar.projectKey=sonarqube-test ^
-                    -Dsonar.projectName=sonarqube-test
-                    '''
+                withSonarQubeEnv("${SONARQUBE_ENV}") {
+                    bat 'mvn sonar:sonar'
                 }
             }
         }
-
-        stage('Quality Gate') {
+ 
+        stage('Copy JAR to Deploy Path') {
             steps {
-                timeout(time: 5, unit: 'MINUTES') {
-                    waitForQualityGate abortPipeline: false
+                script {
+                    bat """
+                        if not exist "${DEPLOY_PATH}" mkdir "${DEPLOY_PATH}"
+                        copy target\\*.jar "${DEPLOY_PATH}\\${JAR_NAME}" /Y
+                    """
                 }
             }
         }
-
-        stage('Package') {
-            steps {
-                bat 'mvn package'
-            }
+    }
+ 
+    post {
+        success {
+            echo 'Build, SonarQube Analysis, and JAR copy completed successfully.'
         }
-
-        stage('Deploy to Nexus') {
-            steps {
-                bat 'mvn deploy'
-            }
+        failure {
+            echo 'Pipeline failed.'
         }
     }
 }

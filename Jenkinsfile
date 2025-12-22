@@ -7,7 +7,7 @@ pipeline {
  
     environment {
         SONARQUBE_ENV = 'SonarQubeServer'
-        DEPLOY_PATH = 'C:\Users\swethasuresh\sample file'
+        DEPLOY_PATH = 'C:\\Users\\swethasuresh\\sample file'
         JAR_NAME = 'hrms.jar'
     }
  

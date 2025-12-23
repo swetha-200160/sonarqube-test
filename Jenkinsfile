@@ -25,7 +25,7 @@ pipeline {
         withCredentials([usernamePassword(
             credentialsId: 'nexus-cred',
             usernameVariable: 'admin',
-            passwordVariable: 'swethadhanya'
+            passwordVariable: 'b8c6bf02-b663-4a5b-8ef3-a2618a625c90'
         )]) {
             bat 'mvn clean deploy -DskipTests -Dnexus.username=%NEXUS_USER% -Dnexus.password=%NEXUS_PASS%'
         }

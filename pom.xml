@@ -1,11 +1,45 @@
-<distributionManagement>
-    <repository>
-        <id>nexus-releases</id>
-        <url>http://localhost:8081/repository/maven-releases/</url>
-    </repository>
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+                             http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
-    <snapshotRepository>
-        <id>nexus-snapshots</id>
-        <url>http://localhost:8081/repository/maven-snapshots/</url>
-    </snapshotRepository>
-</distributionManagement>
+    <!-- REQUIRED -->
+    <modelVersion>4.0.0</modelVersion>
+
+    <!-- PROJECT INFO -->
+    <groupId>com.company</groupId>
+    <artifactId>hrms</artifactId>
+    <version>1.0.0</version>
+    <packaging>jar</packaging>
+
+    <!-- JAVA VERSION -->
+    <properties>
+        <maven.compiler.release>11</maven.compiler.release>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+
+    <!-- DEPENDENCIES -->
+    <dependencies>
+        <!-- Gson dependency (you had compilation error before) -->
+        <dependency>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
+            <version>2.10.1</version>
+        </dependency>
+    </dependencies>
+
+    <!-- NEXUS CONFIG -->
+    <distributionManagement>
+        <repository>
+            <id>nexus-releases</id>
+            <url>http://localhost:8081/repository/maven-releases/</url>
+        </repository>
+
+        <snapshotRepository>
+            <id>nexus-snapshots</id>
+            <url>http://localhost:8081/repository/maven-snapshots/</url>
+        </snapshotRepository>
+    </distributionManagement>
+
+</project>

@@ -36,13 +36,13 @@
     <!-- ✅ NEXUS CONFIG -->
     <distributionManagement>
         <repository>
-            <id>maven-releases</id>
-            <url>http://localhost:8081/repository/maven-releases/</url>
+            <id>nexus-releases</id>
+            <url>http://localhost:8081/repository/nexus-release/</url>
         </repository>
 
         <snapshotRepository>
-            <id>maven-snapshots</id>
-            <url>http://localhost:8081/repository/maven-snapshots/</url>
+            <id>nexus-snapshots</id>
+            <url>http://localhost:8081/repository/nexus-snapshot/</url>
         </snapshotRepository>
     </distributionManagement>
 

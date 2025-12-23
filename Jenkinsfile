@@ -20,12 +20,18 @@ pipeline {
                     credentialsId: 'gitcred'
             }
         }
- 
-     stage('Build & Deploy to Nexus') {
+ stage('Build & Deploy to Nexus') {
     steps {
-        bat 'mvn clean deploy -DskipTests'
+        withCredentials([usernamePassword(
+            credentialsId: 'nexus-cred',
+            usernameVariable: 'admin',
+            passwordVariable: 'swethadhanya'
+        )]) {
+            bat 'mvn clean deploy -DskipTests -Dnexus.username=%NEXUS_USER% -Dnexus.password=%NEXUS_PASS%'
+        }
     }
 }
+
 
 
 

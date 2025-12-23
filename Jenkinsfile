@@ -22,10 +22,11 @@ pipeline {
         }
  
         stage('Build Project') {
-            steps {
-                bat 'mvn clean package -DskipTests'
-            }
-        }
+    steps {
+        bat 'mvn clean package -DskipTests -Dmaven.compiler.source=8 -Dmaven.compiler.target=8'
+    }
+}
+
  
        stage('SonarQube Analysis') {
     steps {

@@ -21,12 +21,9 @@ pipeline {
             }
         }
  
-      stage('Build & Deploy to Nexus') {
+     stage('Build & Deploy to Nexus') {
     steps {
-        bat '''
-        java -version
-        mvn clean deploy -DskipTests
-        '''
+        bat 'mvn clean deploy -DskipTests'
     }
 }
 

@@ -6,11 +6,6 @@ pipeline {
         maven 'MAVEN_HOME'
     }
 
-    environment {
-        JAVA_HOME = tool(name: 'JDK21', type: 'jdk')
-        PATH = "${env.JAVA_HOME}\\bin;${env.PATH}"
-    }
-
     stages {
 
         stage('Checkout Code') {
@@ -22,10 +17,11 @@ pipeline {
 
         stage('Build & Deploy to Nexus') {
             steps {
-                bat 'echo JAVA_HOME=%JAVA_HOME%'
-                bat 'java -version'
-                bat 'mvn -version'
-                bat 'mvn clean deploy -DskipTests'
+                bat '''
+                java -version
+                mvn -version
+                mvn clean deploy -DskipTests
+                '''
             }
         }
 
@@ -40,10 +36,10 @@ pipeline {
 
     post {
         success {
-            echo '✅ Build + Nexus deploy + SonarQube successful'
+            echo '✅ Build, Nexus deploy, and SonarQube analysis SUCCESS'
         }
         failure {
-            echo '❌ Pipeline failed'
+            echo '❌ Pipeline FAILED'
         }
     }
 }

@@ -1,65 +1,39 @@
 pipeline {
     agent any
- 
+
     tools {
         maven 'MAVEN_HOME'
+        jdk 'JDK11'
     }
- 
-    environment {
-        SONARQUBE_ENV = 'SonarQubeServer'
-        DEPLOY_PATH   = 'C:/Users/swethasuresh/sample file'
-        JAR_NAME      = 'hrms.jar'
-    }
- 
+
     stages {
 
         stage('Checkout Code') {
             steps {
                 git branch: 'master',
-                    url: 'https://github.com/swetha-200160/sonarqube-test.git',
-                    credentialsId: 'gitcred'
+                    url: 'https://github.com/swetha-200160/sonarqube-test.git'
             }
         }
- stage('Build & Deploy to Nexus') {
-    steps {
-        withCredentials([usernamePassword(
-            credentialsId: 'nexus-cred',
-            usernameVariable: 'NEXUS_USER',
-            passwordVariable: 'NEXUS_PASS'
-        )]) {
-            bat 'mvn clean deploy -DskipTests'
-        }
-    }
-}
 
-
-
-
-
-
- 
-       stage('SonarQube Analysis') {
-    steps {
-        withSonarQubeEnv('SonarQubeServer') {
-            bat 'mvn clean verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar'
-        }
-    }
-}
-
- 
-        stage('Copy JAR to Deploy Path') {
+        stage('Build & Deploy to Nexus') {
             steps {
-                bat """
-                if not exist "${DEPLOY_PATH}" mkdir "${DEPLOY_PATH}"
-                copy target\\*.jar "${DEPLOY_PATH}\\${JAR_NAME}" /Y
-                """
+                bat 'java -version'
+                bat 'mvn clean deploy -DskipTests'
+            }
+        }
+
+        stage('SonarQube Analysis') {
+            steps {
+                withSonarQubeEnv('SonarQubeServer') {
+                    bat 'mvn sonar:sonar'
+                }
             }
         }
     }
- 
+
     post {
         success {
-            echo '✅ Build, SonarQube analysis, and JAR copy completed successfully.'
+            echo '✅ Build, SonarQube analysis, and Nexus deploy successful.'
         }
         failure {
             echo '❌ Pipeline failed.'

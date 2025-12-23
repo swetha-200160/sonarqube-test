@@ -17,23 +17,19 @@ pipeline {
 
         stage('Build Project') {
             steps {
-                bat '''
-                java -version
-                mvn -version
-                mvn clean package -DskipTests
-                '''
+                bat 'mvn clean package -DskipTests'
             }
         }
 
         stage('SonarQube Analysis') {
             steps {
                 withSonarQubeEnv('SonarQubeServer') {
-                    bat 'mvn verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar'
+                    bat 'mvn verify sonar:sonar'
                 }
             }
         }
 
-        stage('Send Build Files to Nexus') {
+        stage('Deploy to Nexus') {
             steps {
                 bat 'mvn deploy -DskipTests'
             }
@@ -42,7 +38,7 @@ pipeline {
 
     post {
         success {
-            echo '✅ Pull → Build → SonarQube → Nexus SUCCESS'
+            echo '✅ Pull → Build → Sonar → Nexus SUCCESS'
         }
         failure {
             echo '❌ Pipeline FAILED'

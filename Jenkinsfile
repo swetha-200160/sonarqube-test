@@ -27,13 +27,14 @@ pipeline {
             }
         }
  
-        stage('SonarQube Analysis') {
-            steps {
-                withSonarQubeEnv("${SONARQUBE_ENV}") {
-                    bat 'mvn sonar:sonar'
-                }
-            }
+       stage('SonarQube Analysis') {
+    steps {
+        withSonarQubeEnv('SonarQubeServer') {
+            bat 'mvn clean verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar'
         }
+    }
+}
+
  
         stage('Copy JAR to Deploy Path') {
             steps {

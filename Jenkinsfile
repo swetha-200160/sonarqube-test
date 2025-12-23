@@ -8,19 +8,19 @@ pipeline {
 
     stages {
 
-        stage('Checkout Code') {
+        stage('Pull Code') {
             steps {
                 git url: 'https://github.com/swetha-200160/sonarqube-test.git',
                     branch: 'master'
             }
         }
 
-        stage('Build & Deploy to Nexus') {
+        stage('Build Project') {
             steps {
                 bat '''
                 java -version
                 mvn -version
-                mvn clean deploy -DskipTests
+                mvn clean package -DskipTests
                 '''
             }
         }
@@ -28,15 +28,21 @@ pipeline {
         stage('SonarQube Analysis') {
             steps {
                 withSonarQubeEnv('SonarQubeServer') {
-                    bat 'mvn sonar:sonar'
+                    bat 'mvn verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar'
                 }
+            }
+        }
+
+        stage('Send Build Files to Nexus') {
+            steps {
+                bat 'mvn deploy -DskipTests'
             }
         }
     }
 
     post {
         success {
-            echo '✅ Build, Nexus deploy, and SonarQube analysis SUCCESS'
+            echo '✅ Pull → Build → SonarQube → Nexus SUCCESS'
         }
         failure {
             echo '❌ Pipeline FAILED'

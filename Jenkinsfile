@@ -24,10 +24,12 @@ pipeline {
       stage('Build & Deploy to Nexus') {
     steps {
         bat '''
-        mvn clean deploy -DskipTests -Dmaven.compiler.release=11
+        java -version
+        mvn clean deploy -DskipTests
         '''
     }
 }
+
 
 
 

@@ -23,9 +23,13 @@ pipeline {
  
         stage('Build Project') {
     steps {
-        bat 'mvn clean package -DskipTests -Dmaven.compiler.source=8 -Dmaven.compiler.target=8'
+        bat '''
+        java -version
+        mvn clean package -DskipTests -Dmaven.compiler.release=11
+        '''
     }
 }
+
 
  
        stage('SonarQube Analysis') {

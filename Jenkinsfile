@@ -21,7 +21,7 @@ pipeline {
             }
         }
  
-        stage('Build Project') {
+       stage('Build Project') {
     steps {
         bat '''
         java -version

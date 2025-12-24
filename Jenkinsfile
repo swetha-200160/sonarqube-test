@@ -30,12 +30,21 @@ pipeline {
             }
         }
 
-        stage('Deploy to Nexus') {
-            steps {
-                bat 'mvn deploy -DskipTests'
-            }
+       stage('Deploy to Nexus') {
+    steps {
+        withCredentials([usernamePassword(
+            credentialsId: 'nexus-creds',
+            usernameVariable: 'NEXUS_USER',
+            passwordVariable: 'NEXUS_PASS'
+        )]) {
+            bat """
+            curl -u %NEXUS_USER%:%NEXUS_PASS% ^
+            --upload-file target/hrms-1.0.1.jar ^
+            http://localhost:8081/repository/maven-releases/com/company/hrms/1.0.1/hrms-1.0.1.jar
+            """
         }
     }
+}
 
     post {
         success {
